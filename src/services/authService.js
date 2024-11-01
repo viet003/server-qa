@@ -1,6 +1,7 @@
 import db from "../models";
 import bcrypt from "bcryptjs";  // Nếu mật khẩu đã được mã hóa
 import jwt from "jsonwebtoken"; // Để tạo token (JWT)
+require('dotenv').config()
 
 export const getAllAccountsService = () => new Promise(async (resolve, reject) => {
     try {
@@ -34,10 +35,11 @@ export const loginService = ({ user_name, pass_word }) => new Promise(async (res
         const account = await db.Account.findOne({
             where: { user_name },
         });
+        
+        console.log("dfhgdf")
 
         // Kiểm tra mật khẩu (nếu mật khẩu đã được mã hóa bằng bcrypt)
         const isPasswordValid = await bcrypt.compare(pass_word, account.pass_word);
-
         // Tạo token JWT (nếu muốn dùng JWT)
         const token = isPasswordValid &&  jwt.sign(
             { id: account.id, user_name: account.user_name, type: account.type },
