@@ -40,7 +40,7 @@ module.exports = {
       {
         user_name: 'john_doe',
         pass_word: 'password123',
-        employee_id: 1,
+        employee_id: '1017003519705251841',
         type: 1,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -48,7 +48,7 @@ module.exports = {
       {
         user_name: 'jane_smith',
         pass_word: 'password456',
-        employee_id: 2,
+        employee_id: '1017003519705382913',
         type: 2,
         createdAt: new Date(),
         updatedAt: new Date()

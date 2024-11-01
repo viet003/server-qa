@@ -21,28 +21,22 @@ export const getAllAccountsService = () => new Promise(async (resolve, reject) =
             data: response
         });
     } catch (error) {
-        reject({
-            err: 2,
-            msg: 'Lỗi khi lấy dữ liệu từ bảng Account!',
-            error: error.message
-        });
+        reject(error);
     }
 });
 
 export const loginService = ({ user_name, pass_word }) => new Promise(async (resolve, reject) => {
     try {
         // Tìm account theo tên đăng nhập
-        const account = await db.Account.findOne({
+        const response = await db.Account.findOne({
             where: { user_name },
         });
-        
-        console.log("dfhgdf")
 
-        // Kiểm tra mật khẩu (nếu mật khẩu đã được mã hóa bằng bcrypt)
-        const isPasswordValid = await bcrypt.compare(pass_word, account.pass_word);
-        // Tạo token JWT (nếu muốn dùng JWT)
-        const token = isPasswordValid &&  jwt.sign(
-            { id: account.id, user_name: account.user_name, type: account.type },
+        // console.log("dfhgdf")
+
+        const isPasswordValid = bcrypt.compareSync(pass_word, response?.pass_word);
+        const token = isPasswordValid && jwt.sign(
+            { id: response?.id, user_name: response?.user_name, type: response?.type },
             process.env.JWT_SECRET || "your_jwt_secret", // Đặt JWT_SECRET trong .env để bảo mật
             { expiresIn: '1h' }
         );
@@ -54,9 +48,54 @@ export const loginService = ({ user_name, pass_word }) => new Promise(async (res
             token: token || null,
         });
     } catch (error) {
+        console.log(error)
+        reject(error);
+    }
+});
+
+
+const hash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
+export const registerService = ({ user_name, pass_word, type, employee_id }) => new Promise(async (resolve, reject) => {
+    try {
+        // Kiểm tra mã nhân viên có tồn tại hay không
+        const check = await db.Employee.findOne({
+            where: { id: employee_id }
+        });
+
+        if (!check) {
+            return resolve({
+                err: 2,
+                msg: "Mã nhân viên không tồn tại!"
+            });
+        }
+
+        // Tạo tài khoản mới nếu chưa tồn tại tài khoản cho employee_id
+        const [account, created] = await db.Account.findOrCreate({
+            where: { employee_id },
+            defaults: {
+                user_name,
+                pass_word: hash(pass_word),
+                employee_id,
+                type
+            }
+        });
+
+        // Tạo token nếu tài khoản mới được tạo thành công
+        const token = created && jwt.sign(
+            { id: account.id, user_name: account.user_name, type: account.type },
+            process.env.SECRET_KEY || "your_jwt_secret", // Đặt SECRET_KEY trong .env để bảo mật
+            { expiresIn: '1d' }
+        );
+
+        resolve({
+            err: token ? 0 : 2,
+            msg: token ? 'Tạo tài khoản thành công!' : 'Nhân viên đã có tài khoản.',
+            token: token || null
+        });
+    } catch (error) {
         reject({
-            err: 2,
-            msg: 'Lỗi khi thực hiện đăng nhập!',
+            err: 1,
+            msg: 'Lỗi khi tạo tài khoản!',
             error: error.message
         });
     }
