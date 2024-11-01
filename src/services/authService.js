@@ -1,5 +1,5 @@
 import db from "../models";
-import bcrypt from "bcrypt";  // Nếu mật khẩu đã được mã hóa
+import bcrypt from "bcryptjs";  // Nếu mật khẩu đã được mã hóa
 import jwt from "jsonwebtoken"; // Để tạo token (JWT)
 
 export const getAllAccountsService = () => new Promise(async (resolve, reject) => {
