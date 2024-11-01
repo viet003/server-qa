@@ -9,7 +9,7 @@ const router = express.Router()
 
 // auth route
 router.get('/account', authController.getAllAccountController)
-
+router.post('/login', authController.loginController)
 // salary route
 router.get('/salary', salaryController.getAllSalarieController)
 
