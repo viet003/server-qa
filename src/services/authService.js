@@ -25,18 +25,18 @@ export const getAllAccountsService = () => new Promise(async (resolve, reject) =
     }
 });
 
-export const loginService = ({ user_name, pass_word }) => new Promise(async (resolve, reject) => {
+export const loginService = ({ email, pass_word }) => new Promise(async (resolve, reject) => {
     try {
         // Tìm account theo tên đăng nhập
         const response = await db.Account.findOne({
-            where: { user_name },
+            where: { email },
         });
 
         // console.log("dfhgdf")
 
         const isPasswordValid = bcrypt.compareSync(pass_word, response?.pass_word);
         const token = isPasswordValid && jwt.sign(
-            { id: response?.id, user_name: response?.user_name, type: response?.type },
+            { id: response?.id, email: response?.email, type: response?.type },
             process.env.JWT_SECRET || "your_jwt_secret", // Đặt JWT_SECRET trong .env để bảo mật
             { expiresIn: '1h' }
         );
@@ -55,7 +55,7 @@ export const loginService = ({ user_name, pass_word }) => new Promise(async (res
 
 
 const hash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-export const registerService = ({ user_name, pass_word, type, employee_id }) => new Promise(async (resolve, reject) => {
+export const registerService = ({ email, pass_word, type, employee_id }) => new Promise(async (resolve, reject) => {
     try {
         // Kiểm tra mã nhân viên có tồn tại hay không
         const check = await db.Employee.findOne({
@@ -73,7 +73,7 @@ export const registerService = ({ user_name, pass_word, type, employee_id }) => 
         const [account, created] = await db.Account.findOrCreate({
             where: { employee_id },
             defaults: {
-                user_name,
+                email,
                 pass_word: hash(pass_word),
                 employee_id,
                 type
@@ -82,7 +82,7 @@ export const registerService = ({ user_name, pass_word, type, employee_id }) => 
 
         // Tạo token nếu tài khoản mới được tạo thành công
         const token = created && jwt.sign(
-            { id: account.id, user_name: account.user_name, type: account.type },
+            { id: account.id, email: account.email, type: account.type },
             process.env.SECRET_KEY || "your_jwt_secret", // Đặt SECRET_KEY trong .env để bảo mật
             { expiresIn: '1d' }
         );

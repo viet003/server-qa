@@ -12,9 +12,9 @@ export const getAllAccountController = async (req, res) => {
 
 //login
 export const loginController = async (req, res) => {
-    const { user_name, pass_word } = req.body;
+    const { email, pass_word } = req.body;
     try {
-        if (!user_name || !pass_word) {
+        if (!email || !pass_word) {
             return res.status(400).json({
                 err: 1,
                 msg: "Thiếu dữ liệu đầu vào"
@@ -30,9 +30,9 @@ export const loginController = async (req, res) => {
 
 //register
 export const registerController = async (req, res) => {
-    const { user_name, pass_word, type, employee_id } = req.body;
+    const { email, pass_word, type, employee_id } = req.body;
     try {
-        if (!user_name || !pass_word || !type || !employee_id) {
+        if (!email || !pass_word || !type || !employee_id) {
             return res.status(400).json({
                 err: 1,
                 msg: "Thiếu dữ liệu đầu vào"
