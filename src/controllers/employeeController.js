@@ -111,3 +111,15 @@ export const getAllEmployeeWithoutAccountController = async (req, res) => {
         return res.status(500).json(error);
     }
 };
+
+
+// lây ra nhân viên chưa có salary
+export const getEmployeesWithoutSalaryService = async (req, res) => {
+    try {
+        const rs = await employeeService.getEmployeesWithoutAccountService();
+        return res.status(200).json(rs);
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json(error);
+    }
+};

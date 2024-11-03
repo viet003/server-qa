@@ -192,3 +192,35 @@ export const getEmployeesWithoutAccountService = () =>
             });
         }
     });
+
+// lấy ra danh sách employee chưa có bảng lương
+export const getEmployeesWithoutSalaryService = () =>
+    new Promise(async (resolve, reject) => {
+        try {
+            const response = await db.Employee.findAll({
+                where: {
+                    '$salaries.id$': null, // Điều kiện để lọc nhân viên không có bản ghi liên kết trong bảng Salary
+                },
+                include: [
+                    {
+                        model: db.Salary,
+                        as: 'salaries',
+                        attributes: [], // Không cần lấy các thuộc tính của Salary
+                    },
+                ],
+                raw: true, // Để dữ liệu được trả về dưới dạng object đơn giản
+            });
+
+            resolve({
+                err: response.length ? 0 : 1,
+                msg: response.length ? 'Lấy danh sách nhân viên chưa có lương thành công!' : 'Tất cả nhân viên đã có lương.',
+                data: response,
+            });
+        } catch (error) {
+            reject({
+                err: 1,
+                msg: 'Lỗi khi lấy danh sách nhân viên chưa có lương!',
+                error: error,
+            });
+        }
+    });
