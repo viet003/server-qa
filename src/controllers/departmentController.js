@@ -58,6 +58,7 @@ export const deleteDepartmentController = async (req, res) => {
         const rs = await departmentService.deleteDepartmentService(id);
         return res.status(200).json(rs);
     } catch (error) {
+        console.log(error)
         return res.status(500).json(error);
     }
 };

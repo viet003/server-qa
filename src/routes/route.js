@@ -10,8 +10,10 @@ const router = express.Router()
 
 // auth route
 router.get('/account', authController.getAllAccountController)
-router.post('/login', authController.loginController)
-router.post('/register', authController.registerController)
+router.post('/auth/login', authController.loginController)
+router.post('/auth/register', authController.registerController)
+router.post('/auth/update', authController.updateAccountController)
+router.post('/auth/delete', authController.deleteAccountController)
 
 // salary route
 router.get('/salary', salaryController.getAllSalarieController)
@@ -27,6 +29,8 @@ router.post('/department/delete', departmentController.deleteDepartmentControlle
 
 // employee route
 router.get('/employee', employeeController.getAllEmployeeController)
+router.get('/employee/noac', employeeController.getAllEmployeeWithoutAccountController)
+router.post('/employee/id', employeeController.getEmployeeByIdController)
 router.post('/employee/create', employeeController.addEmployeeController)
 router.post('/employee/update', employeeController.updateEmployeeController)
 router.post('/employee/delete', employeeController.deleteEmployeeController)

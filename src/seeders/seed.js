@@ -17,7 +17,7 @@ module.exports = {
         gender: 1,
         phone_number: '123456789',
         address: '123 Main St',
-        department_id: '1017000553057943553',  // Đã gán vào 'HR'
+        department_id: '1017400558899691521',  // Đã gán vào 'HR'
         dependent_number: 2,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -28,7 +28,7 @@ module.exports = {
         gender: 2,
         phone_number: '987654321',
         address: '456 Elm St',
-        department_id: '1017000553058009089',  // Đã gán vào 'Engineering'
+        department_id: '1017400558899757057',  // Đã gán vào 'Engineering'
         dependent_number: 1,
         createdAt: new Date(),
         updatedAt: new Date()
@@ -38,17 +38,17 @@ module.exports = {
     // Thêm dữ liệu cho bảng 'accounts'
     await queryInterface.bulkInsert('accounts', [
       {
-        user_name: 'john_doe',
+        email: 'a@gmail.com',
         pass_word: 'password123',
-        employee_id: '1017003519705251841',
+        employee_id: '1017403282006769665',
         type: 1,
         createdAt: new Date(),
         updatedAt: new Date()
       },
       {
-        user_name: 'jane_smith',
+        email: 'b@gmail.com',
         pass_word: 'password456',
-        employee_id: '1017003519705382913',
+        employee_id: '1017403282006900737',
         type: 2,
         createdAt: new Date(),
         updatedAt: new Date()

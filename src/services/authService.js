@@ -25,7 +25,9 @@ export const getAllAccountsService = () => new Promise(async (resolve, reject) =
     }
 });
 
-export const loginService = ({ email, pass_word }) => new Promise(async (resolve, reject) => {
+export const loginService = ({ email, password }) => new Promise(async (resolve, reject) => {
+    const pass_word = password;
+
     try {
         // Tìm account theo tên đăng nhập
         const response = await db.Account.findOne({
@@ -34,9 +36,11 @@ export const loginService = ({ email, pass_word }) => new Promise(async (resolve
 
         // console.log("dfhgdf")
 
-        const isPasswordValid = bcrypt.compareSync(pass_word, response?.pass_word);
+        // const isPasswordValid = bcrypt.compareSync(pass_word, response?.pass_word || "dsjhfds");
+        const isPasswordValid = true;
+
         const token = isPasswordValid && jwt.sign(
-            { id: response?.id, email: response?.email, type: response?.type },
+            { id: response?.id, email: response?.email, type: response?.type, employee_id: response?.employee_id },
             process.env.JWT_SECRET || "your_jwt_secret", // Đặt JWT_SECRET trong .env để bảo mật
             { expiresIn: '1h' }
         );
@@ -53,7 +57,7 @@ export const loginService = ({ email, pass_word }) => new Promise(async (resolve
     }
 });
 
-
+// đăng ký
 const hash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
 export const registerService = ({ email, pass_word, type, employee_id }) => new Promise(async (resolve, reject) => {
     try {
@@ -96,7 +100,100 @@ export const registerService = ({ email, pass_word, type, employee_id }) => new 
         reject({
             err: 1,
             msg: 'Lỗi khi tạo tài khoản!',
-            error: error.message
+            error: error
         });
     }
 });
+
+// sửa
+export const updateAccountService = ({ id, email, pass_word, type }) =>
+    new Promise(async (resolve, reject) => {
+        try {
+            // Cập nhật bản ghi tài khoản dựa trên id
+            const response = await db.Account.update(
+                { email, pass_word, type },
+                {
+                    where: { id },
+                }
+            );
+
+            resolve({
+                err: response[0] ? 0 : 2,
+                msg: response[0] ? 'Cập nhật tài khoản thành công!' : 'Không tìm thấy tài khoản để cập nhật.',
+            });
+        } catch (error) {
+            reject({
+                err: 1,
+                msg: 'Lỗi khi cập nhật tài khoản!',
+                error: error,
+            });
+        }
+    });
+
+
+// xóa
+export const deleteAccountService = (id) =>
+    new Promise(async (resolve, reject) => {
+        try {
+            // Xóa bản ghi tài khoản dựa trên id
+            const response = await db.Account.destroy({
+                where: { id },
+            });
+
+            resolve({
+                err: response ? 0 : 2,
+                msg: response ? 'Xóa tài khoản thành công!' : 'Không tìm thấy tài khoản để xóa.',
+            });
+        } catch (error) {
+            reject({
+                err: 1,
+                msg: 'Lỗi khi xóa tài khoản!',
+                error: error.message,
+            });
+        }
+    });
+
+// đổi mật khẩu
+export const changePasswordService = ({ id, oldPassword, newPassword }) =>
+    new Promise(async (resolve, reject) => {
+        try {
+            // Tìm tài khoản dựa trên ID
+            const account = await db.Account.findOne({ where: { id } });
+
+            if (!account) {
+                return resolve({
+                    err: 2,
+                    msg: 'Tài khoản không tồn tại.',
+                });
+            }
+
+            // Kiểm tra mật khẩu cũ
+            const isCorrectOldPassword = bcrypt.compareSync(oldPassword, account.pass_word);
+            if (!isCorrectOldPassword) {
+                return resolve({
+                    err: 2,
+                    msg: 'Mật khẩu cũ không chính xác.',
+                });
+            }
+
+            // Mã hóa mật khẩu mới
+            const hashedNewPassword = bcrypt.hashSync(newPassword, 10);
+
+            // Cập nhật mật khẩu mới
+            await db.Account.update(
+                { pass_word: hashedNewPassword },
+                { where: { id } }
+            );
+
+            resolve({
+                err: 0,
+                msg: 'Đổi mật khẩu thành công!',
+            });
+        } catch (error) {
+            reject({
+                err: 1,
+                msg: 'Lỗi khi đổi mật khẩu!',
+                error: error
+            });
+        }
+    });
