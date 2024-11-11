@@ -34,7 +34,7 @@ export const registerController = async (req, res) => {
     const { email, pass_word, type, employee_id } = req.body;
     console.log(req.body)
     try {
-        if (!email || !pass_word || !employee_id) {
+        if (!email || !pass_word || !employee_id || !Number.isInteger(type)) {
             return res.status(400).json({
                 err: 1,
                 msg: "Thiếu dữ liệu đầu vào"
@@ -53,7 +53,7 @@ export const registerController = async (req, res) => {
 export const updateAccountController = async (req, res) => {
     const { id, email, pass_word, type } = req.body;
     try {
-        if (!id || !email || !pass_word || !type) {
+        if (!id || !email || !pass_word || !Number.isInteger(type)) {
             return res.status(400).json({
                 err: 1,
                 msg: "Thiếu dữ liệu đầu vào!",

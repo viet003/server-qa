@@ -32,15 +32,22 @@ export const loginService = ({ email, password }) => new Promise(async (resolve,
         // Tìm account theo tên đăng nhập
         const response = await db.Account.findOne({
             where: { email },
+            include: [
+                {
+                    model: db.Employee,
+                    as: 'employee',  // Use the alias defined in the association
+                    attributes: ['full_name']
+                }
+            ]
         });
 
         // console.log("dfhgdf")
 
-        // const isPasswordValid = bcrypt.compareSync(pass_word, response?.pass_word || "dsjhfds");
-        const isPasswordValid = true;
+        const isPasswordValid = bcrypt.compareSync(pass_word, response?.pass_word || "dsjhfds");
+        // const isPasswordValid = true;
 
         const token = isPasswordValid && jwt.sign(
-            { id: response?.id, email: response?.email, type: response?.type, employee_id: response?.employee_id },
+            { id: response?.id, email: response?.email, type: response?.type, employee_id: response?.employee_id, name: response?.employee?.full_name },
             process.env.JWT_SECRET || "your_jwt_secret", // Đặt JWT_SECRET trong .env để bảo mật
             { expiresIn: '1h' }
         );
@@ -111,7 +118,7 @@ export const updateAccountService = ({ id, email, pass_word, type }) =>
         try {
             // Cập nhật bản ghi tài khoản dựa trên id
             const response = await db.Account.update(
-                { email, pass_word, type },
+                { email, pass_word :  hash(pass_word), type },
                 {
                     where: { id },
                 }
