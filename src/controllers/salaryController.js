@@ -49,7 +49,7 @@ export const updateSalaryController = async (req, res) => {
 
 // xóa
 export const deleteSalaryController = async (req, res) => {
-    const { id } = req.params;
+    const { id } = req.body;
     try {
         if (!id) {
             return res.status(400).json({

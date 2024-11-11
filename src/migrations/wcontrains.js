@@ -41,18 +41,6 @@ module.exports = {
             onUpdate: 'CASCADE'
         });
 
-        // Thêm ràng buộc ngoại tuyến giữa 'month_salary' và 'salary'
-        await queryInterface.addConstraint('month_salaries', {
-            fields: ['salary_id'], 
-            type: 'foreign key',
-            name: 'fk_month_salary_salary_id', 
-            references: {
-                table: 'salaries',
-                field: 'id'
-            },
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE'
-        });
 
         // Thêm ràng buộc ngoại tuyến giữa 'salary' và 'employee'
         await queryInterface.addConstraint('salaries', {
@@ -77,9 +65,6 @@ module.exports = {
 
         // Xóa ràng buộc ngoại tuyến giữa 'month_salary' và 'employee'
         await queryInterface.removeConstraint('month_salaries', 'fk_month_salary_employee_id');
-
-        // Xóa ràng buộc ngoại tuyến giữa 'month_salary' và 'salary'
-        await queryInterface.removeConstraint('month_salaries', 'fk_month_salary_salary_id');
 
         // Xóa ràng buộc ngoại tuyến giữa 'salary' và 'employee'
         await queryInterface.removeConstraint('salaries', 'fk_salary_employee_id');

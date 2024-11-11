@@ -13,7 +13,7 @@ export const getAllDepartmentsService = () => new Promise(async (resolve, reject
         });
 
         resolve({
-            err: response.length ? 0 : 2,
+            err: 0,
             msg: response.length ? 'Lấy dữ liệu thành công!' : 'Không có dữ liệu trong bảng Department.',
             data: response
         });

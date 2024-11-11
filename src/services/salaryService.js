@@ -7,13 +7,20 @@ export const getAllSalariesService = () => new Promise(async (resolve, reject) =
                 {
                     model: db.Employee,
                     as: 'employee', // Đảm bảo sử dụng alias 'employee' nếu đã được thiết lập trong model
-                    attributes: ['full_name', 'phone_number', 'address']
+                    attributes: ['id','full_name', 'dependent_number'],
+                    include: [
+                        {
+                            model : db.Department,
+                            as: 'department',
+                            attributes: ['department_name']
+                        },   
+                    ]
                 }
             ]
         });
 
         resolve({
-            err: response.length ? 0 : 2,
+            err: 0,
             msg: response.length ? 'Lấy dữ liệu thành công!' : 'Không có dữ liệu trong bảng Salary.',
             data: response
         });
@@ -103,3 +110,5 @@ export const deleteSalaryService = (id) =>
             });
         }
     });
+
+

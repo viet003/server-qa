@@ -28,3 +28,29 @@ export const getMonthSalariesByEmployeeIdService = (employee_id) => new Promise(
         });
     }
 });
+
+// them moi
+export const addSalaryMonthService = ({ employee_id, month, year, deduction, total_salary, tax }) =>
+    new Promise(async (resolve, reject) => {
+        try {
+            // Tìm hoặc tạo mới một bản ghi lương dựa trên employee_id
+            const [response, created] = await db.MonthSalary.findOrCreate({
+                where: { month, year },
+                defaults: {
+                    employee_id, month, year, deduction, total_salary, tax
+                }
+            });
+
+            resolve({
+                err: created ? 0 : 2,
+                msg: created ? 'Thêm lương mới thành công!' : `Lương cho ${month}/${year} của nhân viên này đã tồn tại.`,
+                data: response,
+            });
+        } catch (error) {
+            reject({
+                err: 1,
+                msg: 'Lỗi khi thêm lương mới!',
+                error: error.message,
+            });
+        }
+    });

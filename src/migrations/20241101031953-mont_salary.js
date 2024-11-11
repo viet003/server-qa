@@ -12,19 +12,15 @@ module.exports = {
         type: Sequelize.BIGINT,
         allowNull: false,
       },
-      salary_id: {
-        type: Sequelize.BIGINT,
-        allowNull: false,
-      },
       month: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
         allowNull: false
       },
       year: {
-        type: Sequelize.DATE,
+        type: Sequelize.STRING,
         allowNull: false
       },
-      deductions: {
+      deduction: {
         type: Sequelize.BIGINT,
         allowNull: false
       },

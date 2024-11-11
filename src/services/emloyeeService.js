@@ -13,7 +13,7 @@ export const getAllEmployeesService = () => new Promise(async (resolve, reject) 
         });
 
         resolve({
-            err: response.length ? 0 : 2,
+            err: 0,
             msg: response.length ? 'Lấy dữ liệu thành công!' : 'Không có dữ liệu trong bảng Employee.',
             data: response
         });
@@ -180,7 +180,7 @@ export const getEmployeesWithoutAccountService = () =>
             });
 
             resolve({
-                err: response.length ? 0 : 1,
+                err: 0,
                 msg: response.length ? 'Lấy danh sách nhân viên thành công!' : 'Không có nhân viên nào không có tài khoản.',
                 data: response,
             });
@@ -212,7 +212,7 @@ export const getEmployeesWithoutSalaryService = () =>
             });
 
             resolve({
-                err: response.length ? 0 : 1,
+                err: 0,
                 msg: response.length ? 'Lấy danh sách nhân viên chưa có lương thành công!' : 'Tất cả nhân viên đã có lương.',
                 data: response,
             });

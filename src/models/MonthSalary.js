@@ -5,7 +5,6 @@ module.exports = (sequelize) => {
   class MonthSalary extends Model {
     static associate(models) {
       MonthSalary.belongsTo(models.Employee, { foreignKey: 'employee_id', as: 'employee' });
-      MonthSalary.belongsTo(models.Salary, { foreignKey: 'salary_id', as: 'salary' });
     }
   }
 
@@ -20,19 +19,15 @@ module.exports = (sequelize) => {
       type: DataTypes.BIGINT,
       allowNull: false
     },
-    salary_id: {
-      type: DataTypes.BIGINT,
-      allowNull: false
-    },
     month: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: false
     },
     year: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING,
       allowNull: false
     },
-    deductions: {
+    deduction: {
       type: DataTypes.BIGINT,
       allowNull: true
     },

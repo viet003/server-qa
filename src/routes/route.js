@@ -23,6 +23,8 @@ router.post('/salary/delete', salaryController.deleteSalaryController)
 
 // month salary route
 router.post('/msalary', msalaryController.getMonthSalariesByEmployeeIdController)
+router.post('/msalary/add', msalaryController.addMonthSalaryController)
+
 
 // department route
 router.get('/department', departmentController.getAllDepartmentController)
@@ -33,7 +35,7 @@ router.post('/department/delete', departmentController.deleteDepartmentControlle
 // employee route
 router.get('/employee', employeeController.getAllEmployeeController)
 router.get('/employee/noac', employeeController.getAllEmployeeWithoutAccountController)
-router.get('/employee/nosl', employeeController.getEmployeesWithoutSalaryService)
+router.get('/employee/nosl', employeeController.getEmployeesWithoutSalaryController)
 router.post('/employee/id', employeeController.getEmployeeByIdController)
 router.post('/employee/add', employeeController.addEmployeeController)
 router.post('/employee/update', employeeController.updateEmployeeController)
