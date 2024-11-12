@@ -24,6 +24,7 @@ router.post('/salary/delete', salaryController.deleteSalaryController)
 // month salary route
 router.post('/msalary', msalaryController.getMonthSalariesByEmployeeIdController)
 router.post('/msalary/add', msalaryController.addMonthSalaryController)
+router.post('/msalary/delete', msalaryController.deleteMonthSalaryController)
 
 
 // department route

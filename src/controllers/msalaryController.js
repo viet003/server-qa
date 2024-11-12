@@ -2,16 +2,8 @@ import * as msalaryService from "../services/msalaryService"
 
 // lấy ra toàn bộ lương theo tháng
 export const getMonthSalariesByEmployeeIdController = async (req, res) => {
-    const { employee_id } = req.body;
     try {
-        if( !employee_id) {
-            return res.status(400).json({
-                err: 1,
-                msg: "Thiếu dữ liệu đầu vào"
-            })
-        }
-
-        const rs = await msalaryService.getMonthSalariesByEmployeeIdService(employee_id);
+        const rs = await msalaryService.getMonthSalariesByEmployeeIdService(req.body);
         return res.status(200).json(rs)
     } catch (error) {
         return res.status(500).json(error)
@@ -32,6 +24,23 @@ export const addMonthSalaryController = async (req, res) => {
         return res.status(200).json(rs);
     } catch (error) {
         console.log(error)
+        return res.status(500).json(error);
+    }
+};
+
+// xóa
+export const deleteMonthSalaryController = async (req, res) => {
+    const { id } = req.body;
+    try {
+        if (!id) {
+            return res.status(400).json({
+                err: 1,
+                msg: "Thiếu ID lương!",
+            });
+        }
+        const rs = await msalaryService.deleteMonthSalaryService(id);
+        return res.status(200).json(rs);
+    } catch (error) {
         return res.status(500).json(error);
     }
 };
