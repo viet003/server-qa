@@ -26,27 +26,37 @@ export const getAllDepartmentsService = () => new Promise(async (resolve, reject
     }
 });
 
-// thêm mới
 export const addDepartmentService = ({ department_name }) =>
     new Promise(async (resolve, reject) => {
         try {
-            // Tạo mới một bản ghi department
-            const response = await db.Department.create({
-                department_name,
-                createdAt: new Date(),
-                updatedAt: new Date(),
+            const departmentNameLowerCase = department_name.toString().toLowerCase();
+
+            // Create or find a department record
+            const [department, created] = await db.Department.findOrCreate({
+                where: { department_name: departmentNameLowerCase },
+                defaults: {
+                    department_name: departmentNameLowerCase
+                }
             });
 
             resolve({
-                err: response ? 0 : 2,
-                msg: response ? 'Thêm phòng ban mới thành công!' : 'Thêm phòng ban không thành công.',
-                data: response,
+                err: created ? 0 : 2,
+                msg: created 
+                    ? 'Thêm phòng ban mới thành công!' 
+                    : 'Phòng ban đã tồn tại.',
+                data: department
             });
 
         } catch (error) {
-            reject(error);
+            console.log(error);
+            reject({
+                err: 1,
+                msg: 'Đã xảy ra lỗi trong quá trình thêm phòng ban.',
+                error: error.message
+            });
         }
     });
+
 
 // sửa
 export const updateDepartmentService = ({ id, department_name }) =>
