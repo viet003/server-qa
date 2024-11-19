@@ -1,3 +1,4 @@
+import { where } from "sequelize";
 import db from "../models";
 
 export const getAllDepartmentsService = () => new Promise(async (resolve, reject) => {
@@ -41,8 +42,8 @@ export const addDepartmentService = ({ department_name }) =>
 
             resolve({
                 err: created ? 0 : 2,
-                msg: created 
-                    ? 'Thêm phòng ban mới thành công!' 
+                msg: created
+                    ? 'Thêm phòng ban mới thành công!'
                     : 'Phòng ban đã tồn tại.',
                 data: department
             });
@@ -62,18 +63,33 @@ export const addDepartmentService = ({ department_name }) =>
 export const updateDepartmentService = ({ id, department_name }) =>
     new Promise(async (resolve, reject) => {
         try {
-            // Cập nhật bản ghi department dựa trên id
-            const response = await db.Department.update(
-                { department_name },
-                {
-                    where: { id },
-                }
-            );
+            const departmentNameLowerCase = department_name.toString().toLowerCase();
 
-            resolve({
-                err: response[0] ? 0 : 2,
-                msg: response[0] ? 'Cập nhật phòng ban thành công!' : 'Không tìm thấy phòng ban để cập nhật.',
+            const check = await db.Department.findOne({
+                where: db.sequelize.where(
+                    db.sequelize.fn('LOWER', db.sequelize.col('department_name')),
+                    departmentNameLowerCase
+                )
             });
+            // Cập nhật bản ghi department dựa trên id
+            if (!check) {
+                const response = await db.Department.update(
+                    { department_name },
+                    {
+                        where: { id },
+                    }
+                );
+
+                resolve({
+                    err: response[0] ? 0 : 2,
+                    msg: response[0] ? 'Cập nhật phòng ban thành công!' : 'Không tìm thấy phòng ban để cập nhật.',
+                });
+            } else {
+                resolve({
+                    err: 2,
+                    msg: "Tên phòng ban đã tồn tại!",
+                });
+            }
         } catch (error) {
             reject(error);
         }
