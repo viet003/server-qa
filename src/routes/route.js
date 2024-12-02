@@ -4,12 +4,12 @@ import * as employeeController from "../controllers/employeeController"
 import * as authController from "../controllers/authController"
 import * as salaryController from "../controllers/salaryController"
 import * as msalaryController from "../controllers/msalaryController"
-import { authMiddleware } from "../middlewares/authMiddleware";
 
 const router = express.Router()
 
 // auth route
 router.get('/account', authController.getAllAccountController)
+router.post('/auth/token', authController.checkTokenExpiredController)
 router.post('/auth/login', authController.loginController)
 router.post('/auth/register', authController.registerController)
 router.post('/auth/update', authController.updateAccountController)

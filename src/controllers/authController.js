@@ -1,4 +1,5 @@
 import * as authService from "../services/authService"
+import jwt from 'jsonwebtoken';
 
 // lấy ra tất cả phòng ban
 export const getAllAccountController = async (req, res) => {
@@ -82,5 +83,43 @@ export const deleteAccountController = async (req, res) => {
         return res.status(200).json(rs);
     } catch (error) {
         return res.status(500).json(error);
+    }
+};
+
+// check token
+export const checkTokenExpiredController = async (req, res) => {
+    const { token } = req.body;
+
+    try {
+        // Kiểm tra xem token có tồn tại không
+        if (!token) {
+            return res.status(400).json({
+                err: 1,
+                msg: "Thiếu dữ liệu đầu vào!"
+            });
+        }
+        const decoded = jwt.decode(token);
+        if (!decoded || !decoded.exp) {
+            return res.status(400).json({
+                err: 1,
+                msg: "Token không hợp lệ hoặc không có thời gian hết hạn!"
+            });
+        }
+        const currentTime = Math.floor(Date.now() / 1000);
+        const isExpired = decoded.exp < currentTime;
+
+        return res.status(200).json({
+            err: 0,
+            isExpired,
+            msg: isExpired ? "Token đã hết hạn!" : "Token còn hiệu lực."
+        });
+
+    } catch (error) {
+        // Trả về lỗi nếu có lỗi không mong muốn
+        return res.status(500).json({
+            err: 2,
+            msg: "Lỗi trong quá trình xử lý token!",
+            error: error.message
+        });
     }
 };
