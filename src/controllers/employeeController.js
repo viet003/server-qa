@@ -2,8 +2,9 @@ import * as employeeService from "../services/emloyeeService"
 
 // lấy ra tất cả nhân viên
 export const getAllEmployeeController = async (req, res) => {
+    console.log(req?.body)
     try {
-        const rs = await employeeService.getAllEmployeesService();
+        const rs = await employeeService.getAllEmployeesService(req.body);
         return res.status(200).json(rs)
     } catch (error) {
         return res.status(500).json(error)

@@ -25,44 +25,78 @@ export const getAllAccountsService = () => new Promise(async (resolve, reject) =
     }
 });
 
-export const loginService = ({ email, password }) => new Promise(async (resolve, reject) => {
-    const pass_word = password;
-
+export const loginService = async ({ email, password }) => {
     try {
-        // Tìm account theo tên đăng nhập
-        const response = await db.Account.findOne({
+        // Tìm account theo email
+        const account = await db.Account.findOne({
             where: { email },
             include: [
                 {
                     model: db.Employee,
-                    as: 'employee',  // Use the alias defined in the association
-                    attributes: ['full_name']
+                    as: 'employee', // Tên alias định nghĩa trong model
+                    attributes: ['full_name'],
+                    include: [
+                        {
+                            model: db.Department,
+                            as: 'department', // Tên alias định nghĩa trong model
+                            attributes: ['id']
+                        }
+                    ]
                 }
             ]
         });
 
-        // console.log("dfhgdf")
+        // Kiểm tra nếu không tìm thấy tài khoản
+        if (!account) {
+            return {
+                err: 1,
+                msg: 'Không tìm thấy thông tin email.',
+                token: null,
+            };
+        }
 
-        const isPasswordValid = bcrypt.compareSync(pass_word, response?.pass_word || "dsjhfds");
-        // const isPasswordValid = true;
+        // Kiểm tra mật khẩu
+        const isPasswordValid = bcrypt.compareSync(password, account.pass_word || '');
+        if (!isPasswordValid) {
+            return {
+                err: 2,
+                msg: 'Mật khẩu không chính xác.',
+                token: null,
+            };
+        }
 
-        const token = isPasswordValid && jwt.sign(
-            { id: response?.id, email: response?.email, type: response?.type, employee_id: response?.employee_id, name: response?.employee?.full_name },
-            process.env.JWT_SECRET || "your_jwt_secret", // Đặt JWT_SECRET trong .env để bảo mật
+        // console.log(account?.department?.id)
+
+        // Tạo token JWT
+        const token = jwt.sign(
+            {
+                id: account.id,
+                email: account.email,
+                type: account.type,
+                employee_id: account.employee_id,
+                name: account.employee?.full_name,
+                department_id: account?.employee?.department?.id
+            },
+            process.env.JWT_SECRET || 'your_jwt_secret', // Đặt JWT_SECRET trong .env để bảo mật
             { expiresIn: '1h' }
         );
 
-        // Trả về thông tin người dùng và token
-        resolve({
-            err: token ? 0 : 2,
-            msg: token ? 'Thành công!' : response ? 'Mật khẩu không chính xác.' : "Không tìm thấy thông tin email.",
-            token: token || null,
-        });
+        // Trả về thông tin thành công
+        return {
+            err: 0,
+            msg: 'Đăng nhập thành công!',
+            token,
+        };
     } catch (error) {
-        console.log(error)
-        reject(error);
+        console.error('Lỗi trong loginService:', error);
+        return {
+            err: 3,
+            msg: 'Có lỗi xảy ra, vui lòng thử lại sau.',
+            token: null,
+        };
     }
-});
+};
+
 
 // đăng ký
 const hash = password => bcrypt.hashSync(password, bcrypt.genSaltSync(10));
@@ -118,7 +152,7 @@ export const updateAccountService = ({ id, email, pass_word, type }) =>
         try {
             // Cập nhật bản ghi tài khoản dựa trên id
             const response = await db.Account.update(
-                { email, pass_word :  hash(pass_word), type },
+                { email, pass_word: hash(pass_word), type },
                 {
                     where: { id },
                 }

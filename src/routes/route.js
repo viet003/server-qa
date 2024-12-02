@@ -34,7 +34,7 @@ router.post('/department/update', departmentController.updateDepartmentControlle
 router.post('/department/delete', departmentController.deleteDepartmentController)
 
 // employee route
-router.get('/employee', employeeController.getAllEmployeeController)
+router.post('/employee', employeeController.getAllEmployeeController)
 router.get('/employee/noac', employeeController.getAllEmployeeWithoutAccountController)
 router.get('/employee/nosl', employeeController.getEmployeesWithoutSalaryController)
 router.post('/employee/id', employeeController.getEmployeeByIdController)

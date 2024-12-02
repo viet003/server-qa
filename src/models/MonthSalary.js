@@ -31,6 +31,10 @@ module.exports = (sequelize) => {
       type: DataTypes.BIGINT,
       allowNull: true
     },
+    // salary: {
+    //   type: DataTypes.BIGINT,
+    //   allowNull: false
+    // },
     total_salary: {
       type: DataTypes.BIGINT,
       allowNull: false

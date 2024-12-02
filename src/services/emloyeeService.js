@@ -1,16 +1,28 @@
+import { where } from "sequelize";
 import db from "../models";
 
-export const getAllEmployeesService = () => new Promise(async (resolve, reject) => {
+export const getAllEmployeesService = ({ department_id }) => new Promise(async (resolve, reject) => {
     try {
-        const response = await db.Employee.findAll({
-            include: [
-                {
-                    model: db.Department,
-                    as: 'department',  // Alias của Department trong mối quan hệ với Employee
-                    attributes: ['department_name']
-                }
-            ]
-        });
+        const response = department_id ?
+            await db.Employee.findAll({
+                where: { department_id },
+                include: [
+                    {
+                        model: db.Department,
+                        as: 'department',  // Alias của Department trong mối quan hệ với Employee
+                        attributes: ['department_name']
+                    }
+                ]
+            }) :
+            await db.Employee.findAll({
+                include: [
+                    {
+                        model: db.Department,
+                        as: 'department',  // Alias của Department trong mối quan hệ với Employee
+                        attributes: ['department_name']
+                    }
+                ]
+            });
 
         resolve({
             err: 0,
@@ -199,12 +211,12 @@ export const getEmployeesWithoutSalaryService = () =>
         try {
             const response = await db.Employee.findAll({
                 where: {
-                    '$salaries.id$': null, // Điều kiện để lọc nhân viên không có bản ghi liên kết trong bảng Salary
+                    '$salary.id$': null, // Điều kiện để lọc nhân viên không có bản ghi liên kết trong bảng Salary
                 },
                 include: [
                     {
                         model: db.Salary,
-                        as: 'salaries',
+                        as: 'salary',
                         attributes: [], // Không cần lấy các thuộc tính của Salary
                     },
                 ],

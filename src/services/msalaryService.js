@@ -18,7 +18,7 @@ export const getMonthSalariesByEmployeeIdService = ({ employee_id }) => new Prom
                             },
                             {
                                 model: db.Salary,
-                                as: 'salaries',
+                                as: 'salary',
                                 attributes: ['base_salary']
                             },
                         ]
@@ -39,7 +39,7 @@ export const getMonthSalariesByEmployeeIdService = ({ employee_id }) => new Prom
                             },
                             {
                                 model: db.Salary,
-                                as: 'salaries',
+                                as: 'salary',
                                 attributes: ['base_salary']
                             },
                         ]
@@ -55,6 +55,7 @@ export const getMonthSalariesByEmployeeIdService = ({ employee_id }) => new Prom
 
         });
     } catch (error) {
+        console.log(error)
         reject({
             err: 2,
             msg: 'Lỗi khi lấy dữ liệu từ bảng MonthSalary!',
@@ -69,7 +70,7 @@ export const addSalaryMonthService = ({ employee_id, month, year, deduction, tot
         try {
             // Tìm hoặc tạo mới một bản ghi lương dựa trên employee_id
             const [response, created] = await db.MonthSalary.findOrCreate({
-                where: { month, year },
+                where: { employee_id, month, year },
                 defaults: {
                     employee_id, month, year, deduction, total_salary, tax
                 }

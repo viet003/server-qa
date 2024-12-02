@@ -7,7 +7,7 @@ module.exports = (sequelize) => {
       Employee.belongsTo(models.Department, { foreignKey: 'department_id', as: 'department' });
       Employee.hasOne(models.Account, { foreignKey: 'employee_id', as: 'account' });
       Employee.hasMany(models.MonthSalary, { foreignKey: 'employee_id', as: 'monthSalaries' });
-      Employee.hasMany(models.Salary, { foreignKey: 'employee_id', as: 'salaries' });
+      Employee.hasOne(models.Salary, { foreignKey: 'employee_id', as: 'salary' });
     }
   }
 
