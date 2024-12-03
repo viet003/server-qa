@@ -2,7 +2,14 @@ import * as msalaryService from "../services/msalaryService"
 
 // lấy ra toàn bộ lương theo tháng
 export const getMonthSalariesByEmployeeIdController = async (req, res) => {
+    const { year } = req.body
     try {
+        if (!year) {
+            return res.status(400).json({
+                err: 1,
+                msg: "Thiếu dữ liệu đầu vào!",
+            });
+        }
         const rs = await msalaryService.getMonthSalariesByEmployeeIdService(req.body);
         return res.status(200).json(rs)
     } catch (error) {
@@ -14,7 +21,7 @@ export const getMonthSalariesByEmployeeIdController = async (req, res) => {
 export const addMonthSalaryController = async (req, res) => {
     const { employee_id, month, year, deduction, total_salary, tax } = req.body;
     try {
-        if (!employee_id || !month || !year || !deduction || !total_salary || !tax ) {
+        if (!employee_id || !month || !year || !deduction || !total_salary || !tax) {
             return res.status(400).json({
                 err: 1,
                 msg: "Thiếu dữ liệu đầu vào!",

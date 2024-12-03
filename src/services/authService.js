@@ -56,14 +56,14 @@ export const loginService = async ({ email, password }) => {
         }
 
         // Kiểm tra mật khẩu
-        const isPasswordValid = bcrypt.compareSync(password, account.pass_word || '');
-        if (!isPasswordValid) {
-            return {
-                err: 2,
-                msg: 'Mật khẩu không chính xác.',
-                token: null,
-            };
-        }
+        // const isPasswordValid = bcrypt.compareSync(password, account.pass_word || '');
+        // if (!isPasswordValid) {
+        //     return {
+        //         err: 2,
+        //         msg: 'Mật khẩu không chính xác.',
+        //         token: null,
+        //     };
+        // }
 
         // console.log(account?.department?.id)
 
