@@ -7,13 +7,13 @@ export const getAllSalariesService = () => new Promise(async (resolve, reject) =
                 {
                     model: db.Employee,
                     as: 'employee', // Đảm bảo sử dụng alias 'employee' nếu đã được thiết lập trong model
-                    attributes: ['id','full_name', 'dependent_number'],
+                    attributes: ['id', 'full_name', 'dependent_number'],
                     include: [
                         {
-                            model : db.Department,
+                            model: db.Department,
                             as: 'department',
                             attributes: ['department_name']
-                        },   
+                        },
                     ]
                 }
             ]
@@ -33,6 +33,33 @@ export const getAllSalariesService = () => new Promise(async (resolve, reject) =
     }
 });
 
+// lấy thông tin lương theo nhân viên
+export const getSalaryByEmployeeService = ({ employee_id }) => new Promise(async (resolve, reject) => {
+    try {
+        const response = await db.Salary.findOne({
+            where: { employee_id },
+            include: [
+                {
+                    model: db.Employee,
+                    as: 'employee', // Đảm bảo sử dụng alias 'employee' nếu đã được thiết lập trong model
+                    attributes: ['dependent_number'],
+                }
+            ]
+        });
+
+        resolve({
+            err: 0,
+            msg: response ? 'Lấy dữ liệu thành công!' : 'Không có dữ liệu trong bảng Salary.',
+            data: response
+        });
+    } catch (error) {
+        reject({
+            err: 2,
+            msg: 'Lỗi khi lấy dữ liệu từ bảng Salary!',
+            error: error.message
+        });
+    }
+});
 
 export const addSalaryService = ({ employee_id, base_salary }) =>
     new Promise(async (resolve, reject) => {

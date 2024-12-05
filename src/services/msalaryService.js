@@ -1,4 +1,3 @@
-import { where } from "sequelize";
 import db from "../models";
 
 export const getMonthSalariesByEmployeeIdService = ({ employee_id, year }) => new Promise(async (resolve, reject) => {
@@ -10,7 +9,7 @@ export const getMonthSalariesByEmployeeIdService = ({ employee_id, year }) => ne
                     {
                         model: db.Employee,
                         as: 'employee',  // Đảm bảo sử dụng alias 'employee' nếu đã được thiết lập trong model
-                        attributes: ['full_name','dependent_number'],
+                        attributes: ['full_name', 'dependent_number'],
                         include: [
                             {
                                 model: db.Department,
@@ -66,21 +65,25 @@ export const getMonthSalariesByEmployeeIdService = ({ employee_id, year }) => ne
     }
 });
 
-// them moi
+// thêm mới lương theo tháng
 export const addSalaryMonthService = ({ employee_id, month, year, deduction, total_salary, tax }) =>
     new Promise(async (resolve, reject) => {
         try {
-            // Kiểm tra lương tháng trước
+            // Kiểm tra lương tháng trước (bỏ qua nếu là tháng 1)
             const prevMonth = parseInt(month) - 1;
-            const prevSalary = await db.MonthSalary.findOne({
-                where: { employee_id: employee_id, month: `${prevMonth}`, year: year },
-            });
+            let prevSalary = true;
 
+            if (prevMonth > 0) {
+                prevSalary = await db.MonthSalary.findOne({
+                    where: { employee_id: employee_id, month: `${prevMonth}`, year: year },
+                });
+            }
 
+            // Nếu tháng trước không tồn tại, báo lỗi
             if (!prevSalary) {
                 resolve({
                     err: 2,
-                    msg: `Lương cho ${prevMonth}/${year} của nhân viên này chưa được tạo. Vui lòng cập nhật trước!!`,
+                    msg: `Lương cho tháng ${prevMonth}/${year} của nhân viên này chưa được tạo. Vui lòng cập nhật trước!!`,
                 });
                 return;
             }
@@ -103,7 +106,7 @@ export const addSalaryMonthService = ({ employee_id, month, year, deduction, tot
                 err: created ? 0 : 2,
                 msg: created
                     ? 'Thêm lương mới thành công!'
-                    : `Lương cho ${month}/${year} của nhân viên này đã tồn tại.`,
+                    : `Lương cho tháng ${month}/${year} của nhân viên này đã tồn tại.`,
                 data: response,
             });
         } catch (error) {
@@ -114,7 +117,6 @@ export const addSalaryMonthService = ({ employee_id, month, year, deduction, tot
             });
         }
     });
-
 
 
 // xoa

@@ -1,6 +1,6 @@
 import * as salaryService from "../services/salaryService"
 
-// lấy ra lương
+// lấy ra lương của tất cả 
 export const getAllSalarieController = async (req, res) => {
     try {
         const rs = await salaryService.getAllSalariesService();
@@ -10,6 +10,22 @@ export const getAllSalarieController = async (req, res) => {
     }
 }
 
+// lấy ra lương của nhân viên
+export const getSalaryByEmployeeController = async (req, res) => {
+    const { employee_id } = req.body;
+    try {
+        if (!employee_id) {
+            return res.status(400).json({
+                err: 1,
+                msg: "Thiếu dữ liệu đầu vào!",
+            });
+        }
+        const rs = await salaryService.getSalaryByEmployeeService({ employee_id });
+        return res.status(200).json(rs);
+    } catch (error) {
+        return res.status(500).json(error);
+    }
+}
 
 // thêm mới 
 export const addSalaryController = async (req, res) => {
