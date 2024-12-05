@@ -19,9 +19,9 @@ export const getMonthSalariesByEmployeeIdController = async (req, res) => {
 
 // thêm mới 
 export const addMonthSalaryController = async (req, res) => {
-    const { employee_id, month, year, deduction, total_salary, tax } = req.body;
+    const { employee_id, month, salary, year, deduction, total_salary, tax } = req.body;
     try {
-        if (!employee_id || !month || !year || !deduction || !total_salary || !tax) {
+        if (!employee_id || !month || !year || !deduction || !total_salary || !tax || !salary) {
             return res.status(400).json({
                 err: 1,
                 msg: "Thiếu dữ liệu đầu vào!",

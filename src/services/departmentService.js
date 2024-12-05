@@ -1,17 +1,8 @@
-import { where } from "sequelize";
 import db from "../models";
 
 export const getAllDepartmentsService = () => new Promise(async (resolve, reject) => {
     try {
-        const response = await db.Department.findAll({
-            // include: [
-            //     {
-            //         model: db.Employee,
-            //         as: 'employees',
-            //         attributes: ['full_name', 'phone_number', 'address']
-            //     }
-            // ]
-        });
+        const response = await db.Department.findAll({});
 
         resolve({
             err: 0,

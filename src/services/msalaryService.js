@@ -37,12 +37,7 @@ export const getMonthSalariesByEmployeeIdService = ({ employee_id, year }) => ne
                                 model: db.Department,
                                 as: 'department',
                                 attributes: ['department_name']
-                            },
-                            {
-                                model: db.Salary,
-                                as: 'salary',
-                                attributes: ['base_salary']
-                            },
+                            }
                         ]
                     }
                 ]
@@ -66,7 +61,7 @@ export const getMonthSalariesByEmployeeIdService = ({ employee_id, year }) => ne
 });
 
 // thêm mới lương theo tháng
-export const addSalaryMonthService = ({ employee_id, month, year, deduction, total_salary, tax }) =>
+export const addSalaryMonthService = ({ employee_id, month, year, salary, deduction, total_salary, tax }) =>
     new Promise(async (resolve, reject) => {
         try {
             // Kiểm tra lương tháng trước (bỏ qua nếu là tháng 1)
@@ -96,6 +91,7 @@ export const addSalaryMonthService = ({ employee_id, month, year, deduction, tot
                     month,
                     year,
                     deduction,
+                    salary,
                     total_salary,
                     tax,
                 },

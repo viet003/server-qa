@@ -20,6 +20,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
+      salary: {
+        type: Sequelize.BIGINT,
+        allowNull: false
+      },
       deduction: {
         type: Sequelize.BIGINT,
         allowNull: false
