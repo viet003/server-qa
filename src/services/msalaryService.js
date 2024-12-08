@@ -1,10 +1,10 @@
 import db from "../models";
 
-export const getMonthSalariesByEmployeeIdService = ({ employee_id, year }) => new Promise(async (resolve, reject) => {
+export const getMonthSalariesByEmployeeIdService = ({ employee_id, year, month }) => new Promise(async (resolve, reject) => {
     try {
         const response = employee_id ?
             await db.MonthSalary.findAll({
-                where: { employee_id, year },
+                where: month ? { employee_id, year, month } : { employee_id, year },
                 include: [
                     {
                         model: db.Employee,
@@ -26,7 +26,7 @@ export const getMonthSalariesByEmployeeIdService = ({ employee_id, year }) => ne
                 ]
             }) :
             await db.MonthSalary.findAll({
-                where: { year },
+                where: month ? { year, month } : { year },
                 include: [
                     {
                         model: db.Employee,
@@ -44,7 +44,6 @@ export const getMonthSalariesByEmployeeIdService = ({ employee_id, year }) => ne
             })
 
         resolve({
-
             err: 0,
             msg: response.length ? 'Lấy dữ liệu thành công!' : `Không có dữ liệu trong bảng MonthSalary cho employee_id: ${employee_id}.`,
             data: response

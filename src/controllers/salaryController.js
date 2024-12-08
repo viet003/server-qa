@@ -3,9 +3,10 @@ import * as salaryService from "../services/salaryService"
 // lấy ra lương của tất cả 
 export const getAllSalarieController = async (req, res) => {
     try {
-        const rs = await salaryService.getAllSalariesService();
+        const rs = await salaryService.getAllSalariesService(req.body);
         return res.status(200).json(rs)
     } catch (error) {
+        console.log(error);
         return res.status(500).json(error)
     }
 }

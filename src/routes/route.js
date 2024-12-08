@@ -16,7 +16,7 @@ router.post('/auth/update', authController.updateAccountController)
 router.post('/auth/delete', authController.deleteAccountController)
 
 // salary route
-router.get('/salary', salaryController.getAllSalarieController)
+router.post('/salary', salaryController.getAllSalarieController)
 router.post('/salary/employee', salaryController.getSalaryByEmployeeController)
 router.post('/salary/add', salaryController.addSalaryController)
 router.post('/salary/update', salaryController.updateSalaryController)

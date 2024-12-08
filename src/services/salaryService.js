@@ -1,34 +1,42 @@
 import db from "../models";
 
-export const getAllSalariesService = () => new Promise(async (resolve, reject) => {
+export const getAllSalariesService = ({ department_id }) => new Promise(async (resolve, reject) => {
     try {
+        const whereCondition = department_id
+            ? { "$employee.department_id$": department_id }
+            : undefined;
+
         const response = await db.Salary.findAll({
+            where: whereCondition,
             include: [
                 {
                     model: db.Employee,
-                    as: 'employee', // Đảm bảo sử dụng alias 'employee' nếu đã được thiết lập trong model
+                    as: 'employee', // Đảm bảo sử dụng alias 'employee'
                     attributes: ['id', 'full_name', 'dependent_number'],
                     include: [
                         {
                             model: db.Department,
                             as: 'department',
-                            attributes: ['department_name']
+                            attributes: ['department_name'],
                         },
-                    ]
-                }
-            ]
+                    ],
+                },
+            ],
         });
 
         resolve({
             err: 0,
-            msg: response.length ? 'Lấy dữ liệu thành công!' : 'Không có dữ liệu trong bảng Salary.',
-            data: response
+            msg: response.length
+                ? 'Lấy dữ liệu thành công!'
+                : 'Không có dữ liệu trong bảng Salary.',
+            data: response,
         });
     } catch (error) {
+        console.error(error);
         reject({
             err: 2,
             msg: 'Lỗi khi lấy dữ liệu từ bảng Salary!',
-            error: error.message
+            error: error.message,
         });
     }
 });
